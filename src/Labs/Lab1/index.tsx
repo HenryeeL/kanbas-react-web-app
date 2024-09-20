@@ -311,7 +311,7 @@ export default function Lab1() {
               to get dummy text
               <br />
               Please
-              <a id="wd-github." href="https://www.lipsum.com">
+              <a id="wd-github." href="https://github.com/HenryeeL/kanbas-react-web-app">
                 click here
               </a>
               to Github
