@@ -14,7 +14,6 @@ import Flex from "./Flex";
 import ReactIconsSampler from "./ReactIcons";
 import BootstrapGrids from "./BootstrapGrids";
 import ScreenSizeLabel from "./ScreenSizeLabel";
-import BootStrapTables from "./BootStrapTables";
 import BootstrapLists from "./BootstrapLists";
 import BootstrapForms from "./BootstrapForms";
 import BootStrapNavigation from "./BootStrapNavigation";
@@ -79,7 +78,6 @@ export default function Lab2() {
             <ReactIconsSampler />
             <BootstrapGrids />
             <ScreenSizeLabel />
-            <BootStrapTables />
             <BootstrapLists />
             <BootstrapForms />
             <BootStrapNavigation />
