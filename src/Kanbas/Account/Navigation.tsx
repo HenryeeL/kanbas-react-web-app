@@ -1,29 +1,36 @@
-import { Link } from "react-router-dom";
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 export default function AccountNavigation() {
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const links = currentUser ? ["Profile"] : ["Signin", "Signup"];
+
+  const { pathname } = useLocation();
+
   return (
     <div id="wd-account-navigation" className="wd list-group fs-5 rounded-0">
-      <Link to="/Kanbas/Account/Signin" id="wd-course-home-link"
-        className="list-group-item active border border-0"> Signin </Link>
-      <Link to="/Kanbas/Account/Signup" id="wd-course-modules-link"
-        className="list-group-item text-danger border border-0"> Signup </Link>
-      <Link to="/Kanbas/Account/Profile" id="wd-course-piazza-link"
-        className="list-group-item text-danger border border-0"> Profile </Link>
+      <Link
+        to="/Kanbas/Account/Signin"
+        className={`list-group-item ${pathname.includes("Signin") ? "active" : "text-danger"} border border-0`}
+      >
+        Signin
+      </Link>
+      <br />
+      <Link
+        to="/Kanbas/Account/Signup"
+        className={`list-group-item ${pathname.includes("Signup") ? "active" : "text-danger"} border border-0`}
+      >
+        Signup
+      </Link>
+      <br />
+      <Link
+        to="/Kanbas/Account/Profile"
+        className={`list-group-item ${pathname.includes("Profile") ? "active" : "text-danger"} border border-0`}
+      >
+        Profile
+      </Link>
+      <br />
     </div>
   );
 }
-<div id="wd-courses-navigation" className="wd list-group fs-5 rounded-0">
-      <Link to="/Kanbas/Courses/1234/Home" id="wd-course-home-link"
-        className="list-group-item active border border-0"> Home </Link>
-      <Link to="/Kanbas/Account/Signup" id="wd-course-modules-link"
-        className="list-group-item text-danger border border-0"> Signup </Link>
-      <Link to="/Kanbas/Account/Profile" id="wd-course-piazza-link"
-        className="list-group-item text-danger border border-0"> Profile </Link>
-      <Link to="/Kanbas/Courses/1234/Zoom" id="wd-course-zoom-link"
-        className="list-group-item text-danger border border-0"> Zoom </Link>
-      <Link to="/Kanbas/Courses/1234/Assignments" id="wd-course-quizzes-link"
-        className="list-group-item text-danger border border-0"> Assignments </Link>
-      <Link to="/Kanbas/Courses/1234/Quizzes" id="wd-course-assignments-link"
-        className="list-group-item text-danger border border-0"> Quizzes </Link>
-      <Link to="/Kanbas/Courses/1234/People" id="wd-course-people-link"
-        className="list-group-item text-danger border border-0" > People </Link>
-    </div>
