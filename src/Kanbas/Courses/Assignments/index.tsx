@@ -1,93 +1,72 @@
+import AssignmentButtons from "./AssignmentButtons";
+import AssignmentControls from "./AssignmentControls";
 import { BsGripVertical } from "react-icons/bs";
-import { FaSearch, FaPlus, FaChevronDown } from "react-icons/fa";
-import AssignmentControlButtons from "./AssignmentControlButtons";
-import AssignmentsControlButtons from "./AssignmentsControlButtons";
-import { FiFileText } from "react-icons/fi";
-import { useParams } from "react-router-dom";
-import * as db from "../../Database"; // Import assignments data
+import { useParams } from "react-router";
+import * as db from "../../Database";
+import { Link } from "react-router-dom";
+import SingleAssignmentButtons from "./SingleAssignmentButtons";
+import SingleAssignmentButtonsBefore from "./SingleAssignmentButtonsBefore";
+import { useSelector, useDispatch } from "react-redux";
+import { addAssignment, editAssignment, deleteAssignment, updateAssignment } from "./reducer";
+import { useState } from 'react';
+import { FaPlus } from "react-icons/fa";
 
-export default function Assignments() {
-  // Use useParams to get the course ID from the URL
+export default function Assignments({ isFaculty }: { isFaculty: boolean }) {
   const { cid } = useParams();
-  // Filter assignments for the selected course
-  const assignments = db.assignments.filter((assignment) => assignment.course === cid);
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  const dispatch = useDispatch();
+  const [assignmentName, setAssignmentName] = useState('');
+  const [assignmentDueDate, setAssignmentDueDate] = useState(new Date());
+  const [assignmentPoints, setAssignmentPoints] = useState(100);
+  const [assignmentAvailableFrom, setAssignmentAvailableFrom] = useState(new Date());
 
   return (
-    <div className="container p-3">
-      {/* Header Section */}
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        {/* Search Input */}
-        <div className="d-flex align-items-center w-50">
-          <input
-            id="wd-search-assignment"
-            className="form-control"
-            placeholder="Search"
-          />
-          <FaSearch className="ms-2 text-muted" />
+    <ul id="wd-assignments" className="list-group rounded-0">
+      <AssignmentButtons
+        isFaculty={isFaculty}
+      />
+      <li className="wd-assignment list-group-item p-0 mb-5 fs-5 border-gray">
+        <div id="wd-assignment-title" className="p-3 ps-2 bg-secondary">
+          <FaPlus className="ps-2 me-4" /><b>ASSIGNMENTS</b>
+          <AssignmentControls isFaculty={isFaculty} />
+          
         </div>
 
-        {/* Group and Assignment Buttons */}
-        <div className="d-flex align-items-center">
-          <button className="btn btn-light me-2">+ Group</button>
-          <button className="btn btn-danger d-flex align-items-center">
-            <FaPlus className="me-1" /> Assignment
-          </button>
-        </div>
-      </div>
-
-      {/* Assignments Section */}
-      <div className="card">
-        <div className="card-header d-flex align-items-center justify-content-between bg-light">
-          <div className="d-flex align-items-center">
-            <FaChevronDown className="me-2 fs-5 text-muted" />
-            <span className="fw-bold">ASSIGNMENTS</span>
-          </div>
-          <div className="d-flex align-items-center">
-            <span
-              className="badge text-dark px-3 py-2 rounded-pill fs-6"
-              style={{
-                backgroundColor: "#ffffff",
-                border: "1px solid #e0e0e0",
-                borderRadius: "50px",
-              }}
-            >
-              40% of Total
-            </span>
-            <AssignmentsControlButtons />
-          </div>
-        </div>
-
-        <ul className="list-group list-group-flush">
-          {/* Assignment Items */}
-          {assignments.map((assignment) => (
-            <li
-              key={assignment._id}
-              className="list-group-item d-flex align-items-center justify-content-between p-3"
-              style={{ borderLeft: "4px solid green" }}
-            >
-              <div className="d-flex align-items-center">
-                <BsGripVertical className="me-3 fs-4 text-muted" />
-                <FiFileText className="me-3 text-success fs-4" />
-                <div className="ms-2">
-                  <div className="fw-bold">
-                    <a
-                      className="text-decoration-none text-dark"
-                      href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
-                    >
-                      {assignment.title}
-                    </a>
-                  </div>
-                  <div className="text-muted">
-                    <span className="text-danger">Multiple Modules</span> | <strong>Not available until</strong> May 6 at 12:00am | <br />
-                    <strong>Due:</strong> May 13 at 11:59pm | 100 pts
-                  </div>
-                </div>
+        <ul id="wd-assignment-list" className="list-group">
+          {assignments.filter((assignment: any) => assignment.course === cid).map((assignment: any) => (
+            <li className="wd-assignment-list-item list-group-item d-flex justify-content-between align-items-center">
+              <div className="d-flex justify-content-center" style={{ marginRight: '10px' }}>
+                <SingleAssignmentButtonsBefore />
               </div>
-              <AssignmentControlButtons />
+              <div className="flex-grow-1">
+                {!assignment.editing && (
+                  <>
+                    <Link className="wd-assignment-link text-dark"
+                      to={assignment._id}>
+                      <b>{assignment.title}</b>
+                    </Link><br />
+                  </>
+                )}
+
+                {isFaculty &&
+                  <SingleAssignmentButtons
+                    assignmentId={assignment._id}
+                    deleteAssignment={() => { dispatch(deleteAssignment(assignment._id)) }}
+                  />}
+                <span className="wd-assignment-description text-secondary">
+                  <span className="text-danger">Multiple Modules</span> |
+                  <b>Not available until</b> {assignment.availableFrom || 'N/A'} |
+                </span><br />
+                <span className="wd-assignment-due text-secondary">
+                  <b>Due</b> {assignment.due || 'N/A'} | {assignment.points || '0'} pts
+                </span>
+              </div>
             </li>
           ))}
+
         </ul>
-      </div>
-    </div>
+
+      </li>
+    </ul>
   );
 }

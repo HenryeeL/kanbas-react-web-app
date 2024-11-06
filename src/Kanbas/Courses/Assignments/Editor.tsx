@@ -1,94 +1,200 @@
-import { useEffect, useState } from 'react';
-import { Form, Button, Row, Col } from 'react-bootstrap';
-import { useParams, Link } from 'react-router-dom';
-import { assignments } from '../../Database';
+import { FaCalendar } from "react-icons/fa";
+import { useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import{ useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { addAssignment, updateAssignment } from "./reducer";
 
 export default function AssignmentEditor() {
-  const { cid, aid } = useParams(); // Parse course ID and assignment ID
+  const { aid, cid } = useParams();
+  const {assignments} = useSelector((state: any) => state.assignmentsReducer);
+  const assignment = assignments.find((assignment: any) => assignment._id === aid);
+  const [points, setPoints] = useState(assignment?.points || 100);
+  const [name, setName] = useState(assignment?.title || '');
+  const [description, setDescription] = useState(assignment?.description || '');
+  const [due, setDue] = useState(assignment?.due ? new Date(assignment.due) : new Date());
+  const [availableFrom, setAvailableFrom] = useState(assignment?.availableFrom ? new Date(assignment.availableFrom) : new Date());
+  const [availableUntil, setAvailableUntil] = useState(assignment?.availableUntil ? new Date(assignment.availableUntil) : new Date());
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // Use filter to find the matching assignment
-  const assignment = assignments.filter((a) => a._id === aid && a.course === cid)[0];
+  const handleSave = () => {
+    const updatedAssignment = {
+      ...assignment,
+      _id: aid,
+      points,
+      title: name,
+      description,
+      due: due.toLocaleString("en-US", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: true }),
+      availableFrom: availableFrom.toLocaleString("en-US", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: true }),
+      availableUntil: availableUntil.toLocaleString("en-US", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: true }),
+      course: cid
+    }
 
-  if (!assignment) {
-    return <div>Loading...</div>;
+    if (assignment) {
+      dispatch(updateAssignment(updatedAssignment));
+    } else {
+      dispatch(addAssignment(updatedAssignment));
+    }
+
+    navigate(`/Kanbas/Courses/${cid}/Assignments`);
   }
+  
+    return (
+      <div id="wd-assignments-editor">
+        <form>
+        {/* Name Edit */}
+        <div className="row mb-3">
+          <label htmlFor="wd-name" className="col-sm-2 col-form-label">Assignment Name</label>
+          <input id="wd-name" value={assignment && assignment.title} 
+            onChange={(e) => setName(e.target.value)} 
+            className="form-control"
+          />
+        </div>
+        {/* Description */}
+        <div className="row mb-3">
+          <textarea id="wd-description" value={assignment&&assignment.description} 
+          onChange={(e) => setDescription(e.target.value)}
+          className="form-control" rows={10}
+          />
+        </div>
+        {/* Points */}
+        <div className="row mb-3 col-sm-12 float-end">
+          <label htmlFor="wd-points" className="col-sm-2 col-form-label d-flex justify-content-end">Points</label>
+          <div className="col-sm-10">
+            <input id="wd-points" value={assignment&&assignment.points} 
+            onChange={(e) => setPoints(parseInt(e.target.value))}
+            className="form-control"/>
+          </div>
+        </div>
+        {/* Group */}
+        <div className="row mb-3 col-sm-12 float-end">
+          <label htmlFor="wd-group" className="col-sm-2 col-form-label d-flex justify-content-end">Assignment Group</label>
+          <div className="col-sm-10">
+            <select id="wd-group" className="form-select">
+                  <option value='assignments'>ASSIGNMENTS</option>
+              </select>
+          </div>
+        </div>
+        {/* Display Grade As */}
+        <div className="row mb-3 col-sm-12 float-end">
+          <label htmlFor="wd-display-grade-as" className="col-sm-2 col-form-label d-flex justify-content-end">Display Grade as</label>
+          <div className="col-sm-10">
+            <select id="wd-display-grade-as" className="form-select">
+                <option value='percentage'>Percentage</option>
+                <option value='complete'>Complete</option>
+                <option value='points'>Points</option>
+              </select>
+          </div>
+        </div>
+        {/* Submission Type */}
+        <div className="row mb-3 col-sm-12 float-end">
+          <label htmlFor="wd-submission-type" className="col-sm-2 col-form-label d-flex justify-content-end">Submission Type</label>
+          <div className="col-sm-10">
+            <div className=" border border-1 rounded-2 p-3">
+              <select id="wd-submission-type" className="form-select">
+                  <option value='online'>Online</option>
+                  <option value='paper'>Paper</option>
+              </select>
+              <div className="mt-3">
+                <label htmlFor="wd-text-entry" className="mb-3"><b> Online Entry Options</b></label><br/>
 
-  return (
-    <div id="wd-assignments-editor" className="container p-4">
-      {/* Assignment Name */}
-      <Form.Group controlId="wd-name" className="mb-4">
-        <Form.Label>Assignment Name</Form.Label>
-        <Form.Control type="text" defaultValue={assignment.title} />
-      </Form.Group>
+                <div className="form-check mb-3">
+                  <input type="checkbox" id="wd-text-entry" className="form-check-input" />
+                  <label htmlFor="wd-text-entry" className="form-check-label">Text Entry</label>
+                </div>
 
-      {/* Description */}
-      <Form.Group controlId="wd-description" className="mb-4">
-        <Form.Label>Description</Form.Label>
-        <Form.Control
-          as="textarea"
-          rows={6}
-          defaultValue={`The assignment is available online. Submit a link to the landing page of your Web application running on Netlify.
+                <div className="form-check mb-3">
+                  <input type="checkbox" id="wd-website-url" className="form-check-input"/>
+                  <label htmlFor="wd-website-url">Website URL</label>
+                </div>
 
-The landing page should include the following:
-• Your full name and section
-• Links to each of the lab assignments
-• Link to the Kanbas application
-• Links to all relevant source code repositories
+                <div className="form-check mb-3">
+                  <input type="checkbox" id="wd-media-recordings" className="form-check-input"/>
+                  <label htmlFor="wd-media-recordings">Media Recordings</label>
+                </div>
 
-The Kanbas application should include a link to navigate back to the landing page.`}
-          style={{ whiteSpace: 'pre-wrap' }}
-        />
-      </Form.Group>
+                <div className="form-check mb-3">
+                  <input type="checkbox" id="wd-student-annotation" className="form-check-input"/>
+                  <label htmlFor="wd-student-annotation">Student Annotation</label>
+                </div>
 
-      <Row>
-        <Col md={6}>
-          {/* Points */}
-          <Form.Group controlId="wd-points" className="mb-4">
-            <Form.Label>Points</Form.Label>
-            <Form.Control type="number" defaultValue={100} />
-          </Form.Group>
-        </Col>
+                <div className="form-check mb-3">
+                  <input type="checkbox" id="wd-file-upload" className="form-check-input"/>
+                  <label htmlFor="wd-file-upload">File Uploads</label>
+                </div>
+              </div>
 
-        {/* Assign Section */}
-        <Col md={6}>
-          <Form.Group controlId="wd-assign-section" className="mb-4">
-            <Form.Label>Assign</Form.Label>
-            <div className="p-3 border rounded">
-              {/* Assign To */}
-              <Form.Group controlId="wd-assign-to" className="mb-3">
-                <Form.Label><strong>Assign to</strong></Form.Label>
-                <Form.Control type="text" defaultValue="Everyone" />
-              </Form.Group>
-
-              {/* 截止日期 */}
-              <Form.Group controlId="wd-due-date" className="mb-3">
-                <Form.Label><strong>Due</strong></Form.Label>
-                <Form.Control type="datetime-local" defaultValue="2024-05-13T23:59" />
-              </Form.Group>
-
-              {/* 可用日期范围 */}
-              <Form.Group className="mb-3">
-                <Row>
-                  <Col md={6}>
-                    <Form.Label><strong>Available from</strong></Form.Label>
-                    <Form.Control type="datetime-local" id="wd-available-from" defaultValue="2024-05-06T00:00" />
-                  </Col>
-                  <Col md={6}>
-                    <Form.Label><strong>Until</strong></Form.Label>
-                    <Form.Control type="datetime-local" id="wd-available-until" defaultValue="2024-05-20T00:00" />
-                  </Col>
-                </Row>
-              </Form.Group>
             </div>
-          </Form.Group>
-        </Col>
-      </Row>
 
-      {/* Cancel and Save buttons */}
-      <div className="d-flex justify-content-end mt-4">
-        <Link to={`/Kanbas/Courses/${cid}/Assignments`} id="wd-cancel" className="btn btn-secondary me-2">Cancel</Link>
-        <Link to={`/Kanbas/Courses/${cid}/Assignments`} id="wd-save" className="btn btn-primary">Save</Link>
-      </div>
+          </div>
+        </div>
+
+        {/* Assign */}
+        <div className="row mb-3 col-sm-12 float-end">
+          <label htmlFor="wd-assign" className="col-sm-2 col-form-label d-flex justify-content-end">Assign</label>
+          <div className="col-sm-10">
+            <div className="border border-1 rounded-2 p-3">
+              <div>
+                <label htmlFor="wd-assign-to" className="form-label"><b>Assign to</b></label><br/>
+                <input type="text" value="Everyone" className="form-control"/><br/>
+              </div>
+
+              {/* Due */}
+              <div className="mb-4">
+                <label htmlFor="wd-due" className="form-label"><b>Due</b></label>
+                <div className="input-group">
+                  <input
+                    type="datetime-local"
+                    id="wd-due"
+                    value={due.toISOString().slice(0, 16)}
+                    onChange={(e) => setDue(new Date(e.target.value))}
+                    className="form-control"
+                  />
+                  <span className="input-group-text"><FaCalendar/></span>
+              </div>
+              </div>
+
+              {/* Available */}
+              <div className="row">
+                <div className="col-sm-6">
+                  <label htmlFor="wd-available-from" className="form-label"><b>Available From</b></label>
+                  <div className="input-group">
+                    <input
+                      type="datetime-local"
+                      id="wd-available-from"
+                      value={availableFrom.toISOString().slice(0, 16)} // Convert to "YYYY-MM-DDTHH:MM" for input
+                      onChange={(e) => setAvailableFrom(new Date(e.target.value))}
+                      className="form-control"
+                    />
+                    <span className="input-group-text"><FaCalendar/></span>
+                  </div>
+                </div>
+                <div className="col-sm-6">
+                  <label htmlFor="wd-available-until" className="form-label"><b>Until</b></label>
+                  <div className="input-group">
+                    <input
+                      type="datetime-local"
+                      id="wd-available-until"
+                      value={availableUntil.toISOString().slice(0, 16)}
+                      onChange={(e) => setAvailableUntil(new Date(e.target.value))}
+                      className="form-control"
+                    />
+                    <span className="input-group-text"><FaCalendar/></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr className="mt-5"/>
+        </div>
+        <div className="row float-end">
+          <div className="d-flex justify-item-end gap-2">
+            <Link to={`/Kanbas/Courses/${cid}/Assignments`} id="wd-cancel" className="btn btn-lg btn-secondary border border-1 border-dark">Cancel</Link>
+            <button onClick={handleSave} id="wd-save" className="btn btn-lg btn-danger">Save</button>
+          </div>
+        </div>
+
+        </form>
     </div>
-  );
-}
+);}

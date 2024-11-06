@@ -1,78 +1,77 @@
-import Add from "./Add";
-import AddingAndRemovingToFromArrays from "./AddingAndRemovingToFromArrays";
-import ArrayIndexAndLength from "./ArrayIndexAndLength";
-import ArrowFunctions from "./ArrowFunctions";
-import BooleanVariable from "./BooleanVariables";
-import Classes from "./Classes";
-import ConditionalOutputIfElse from "./ConditionalOutputIfElse";
-import ConditionalOutputInline from "./ConditionalOutputInline";
-import Destructing from "./Destructing";
-import DestructuringImports from "./DestructingImports";
-import FilterFunction from "./FilterFunction";
-import FindFunction from "./FindFunction";
-import FindIndexFunction from "./FindIndexFunction";
-import ForLoops from "./ForLoops";
-import FunctionDestructing from "./FunctionDestructing";
-import House from "./House";
-import Highlight from "./Highlight";
-import IfElse from "./IfElse";
-import ImpliedReturn from "./ImpliedReturn";
-import JsonStringify from "./JsonStringify";
-import LegacyFunctions from "./LegacyFunctions";
-import MapFunction from "./MapFunction";
-import SimpleArrays from "./SimpleArrays";
-import Spreading from "./Spreading";
-import Square from "./Square";
-import Styles from "./Styles";
-import TemplateLiterals from "./TemplateLiterals";
-import TernaryOperator from "./TernaryOperator";
-import TodoList from "./todos/TodoList";
 import VariablesAndConstants from "./VariablesAndConstants";
 import VariableTypes from "./VariableTypes";
+import BooleanVariables from "./BooleanVariables";
+import IfElse from "./IfElse";
+import TernaryOperator from "./TernaryOperator";
+import ConditionalOutputIfElse from "./ConditionalOutputIfElse";
+import LegacyFunctions from "./LegacyFunctions";
+import ArrowFunctions from "./ArrowFunctions";
+import ConditionalOutputInline from "./ConditionalOutputInline";
+import ImpliedReturn from "./ImpliedReturn";
+import TemplateLiterals from "./TemplateLiterals";
+import SimpleArrays from "./SimpleArrays";
+import ArrayIndexAndLength from "../ArrayIndexAndLength";
+import ForLoops from "./ForLoops";
+import MapFunction from "./MapFunction";
+import FindFunction from "./FindFunction";
+import FindIndex from "./FindIndex";
+import FilterFunction from "./FilterFunction";
+import JsonStringify from "./JsonStringify";
+import House from "./House";
+import TodoItem from "./TodoItem";
+import TodoList from "./TodoList";
+import Spreading from "./Spreading";
+import Destructing from "./Destructing";
+import FunctionDestructing from "./FunctionDestructing";
+import DestructingImports from "./DestructingImports";
+import Classes from "./Classes";
+import Styles from "./Styles";
+import Add from "./Add";
+import Square from "./Square";
+import Highlight from "./Highlight";
 import AddPathParameters from "./AddPathParameters";
 import PathParameters from "./PathParameters";
 import { useSelector } from "react-redux";
 
 export default function Lab3() {
-  const { todos } = useSelector((state: any) => state.todosReducer);
-  console.log('Hello World!');
-  return (
+  console.log("Hello World!")
+  const {todos} = useSelector((state: any) => state.todoReducer);
+  return(
     <div id="wd-lab3">
       <h3>Lab 3</h3>
       <ul className="list-group">
         {todos.map((todo: any) => (
-          <li className="list-group-item" key={todo.id}>
+          <li key={todo.id} className="list-group-item">
             {todo.title}
           </li>
         ))}
       </ul>
-      <hr />
-      <VariablesAndConstants />
+      <VariablesAndConstants/>
       <VariableTypes />
-      <BooleanVariable />
+      <BooleanVariables />
       <IfElse />
       <TernaryOperator />
-      <ConditionalOutputIfElse />
-      <ConditionalOutputInline />
+      <ConditionalOutputIfElse /><hr/>
+      <ConditionalOutputInline /><hr/>
       <LegacyFunctions />
       <ArrowFunctions />
       <ImpliedReturn />
       <TemplateLiterals />
       <SimpleArrays />
       <ArrayIndexAndLength />
-      <AddingAndRemovingToFromArrays />
       <ForLoops />
       <MapFunction />
       <FindFunction />
-      <FindIndexFunction />
+      <FindIndex />
       <FilterFunction />
       <JsonStringify />
       <House />
+      <TodoItem />
       <TodoList />
       <Spreading />
       <Destructing />
       <FunctionDestructing />
-      <DestructuringImports />
+      <DestructingImports />
       <Classes />
       <Styles />
       <Add a={3} b={4} />
@@ -80,8 +79,7 @@ export default function Lab3() {
       <Square>4</Square>
       <hr />
       <Highlight>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipitratione eaque illo minus cum, saepe totam
-        vel nihil repellat nemo explicabo excepturi consectetur. Modi omnis minus sequi maiores, provident voluptates.
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Numquam ad a animi eius possimus voluptatum eum assumenda beatae placeat? Quidem voluptatum maiores dolore amet nostrum labore nisi debitis veniam laudantium.
       </Highlight>
       <PathParameters />
     </div>
