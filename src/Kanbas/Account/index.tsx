@@ -1,5 +1,6 @@
 import Signin from "./Signin";
 import Profile from "./Profile";
+import Users from "./Users";
 import Signup from "./Signup";
 import {Routes, Route, Navigate} from "react-router-dom";
 import AccountNavigation from "./Navigation";
@@ -20,6 +21,8 @@ export default function Account() {
                             <Route path = '/Signin' element = {<Signin />} />
                             <Route path = '/Profile' element = {<Profile />} />
                             <Route path = '/Signup' element = {<Signup />} />
+                            <Route path="/Users" element={<Users />} />
+                            <Route path="/Users/:uid" element={<Users />} />
                         </Routes>
                     </td>
                 </tr>

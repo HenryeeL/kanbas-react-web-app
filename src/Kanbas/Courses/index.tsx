@@ -9,6 +9,8 @@ import AssignmentEditor from "./Assignments/Editor";
 import { FaAlignJustify } from "react-icons/fa";
 import PeopleTable from "./People/Table";
 import { useSelector } from "react-redux";
+import * as coursesClient from "./client";
+import { useEffect, useState } from "react";
 
 export default function Courses({courses}: {courses: any[]}) {
     const { cid } = useParams();
@@ -16,6 +18,15 @@ export default function Courses({courses}: {courses: any[]}) {
     const { pathname } = useLocation();
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const isFaculty = currentUser.role === "FACULTY";
+    const [ users, setUsers ] = useState<any[]>([]);
+    const fetchUsers = async () => {
+        const users = await coursesClient.findUsersForCourse(cid as string);
+        setUsers(users);
+    }
+
+    useEffect(() => {
+        fetchUsers();
+      }, [cid]);
 
     return (
     <div id="wd-courses">
@@ -33,7 +44,7 @@ export default function Courses({courses}: {courses: any[]}) {
             <Route path="Modules" element={<Modules isFaculty = {isFaculty} />} />
             <Route path="Assignments" element={<Assignments isFaculty={isFaculty} />} />
             <Route path="Assignments/:aid" element={<AssignmentEditor />} />
-            <Route path="People" element = {<PeopleTable />} />
+            <Route path="People" element = {<PeopleTable users={users} />} />
             </Routes>
             </div>
         </div>

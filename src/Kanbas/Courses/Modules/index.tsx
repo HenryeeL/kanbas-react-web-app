@@ -41,7 +41,7 @@ export default function Modules({ isFaculty } : { isFaculty: boolean }) {
         isFaculty={isFaculty}
         setModuleName={setModuleName} 
         moduleName={moduleName} 
-        addModule={createModuleForCourse} /><br/><br/><br/><br/>x
+        addModule={createModuleForCourse} /><br/><br/><br/><br/>
 
         <ul id="wd-modules" className="list-group rounded-0">
           {modules.map((module: any) => (

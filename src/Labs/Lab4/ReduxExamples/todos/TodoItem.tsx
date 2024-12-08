@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { deleteTodo, setTodo } from "./todoReducer";
-export default function TodoItem( todo: any ) {
+export default function TodoItem({ todo }: { todo: any }) {
   const dispatch = useDispatch();
   return (
     <li key={todo.id} className="list-group-item">
